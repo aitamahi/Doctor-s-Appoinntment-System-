@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title></title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.13.4/underscore-min.min.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function(){
+      var appointmentdf = {{appointmentdf|safe}}
+
+      $("#userlist").change(function(){
+        debugger;
+          if($("#userlist").val()==""){
+
+          }else{
+            var filter_user =  _.filter(appointmentdf,function(evt){ return evt.user==$("#userlist").val()})
+                  // filter_user = _.unique(_.pluck(districlist,"districtname"))
+                  var spect_user = _.unique(_.pluck(filter_user,'Specialist'))
+                  var spect_dept = _.unique(_.pluck(filter_user,'Specialist__department'))
+                  //var spt_arr=[]
+                  var designation='<option value="" selected> Choose..</option>'
+                  for(let i=0;i<spect_user.length;i++){
+
+                    designation+='<option value="'+spect_user[i]+'">'+spect_dept[i]+'</option>'
+
+                  }
+                  $("#doctor_degination").empty()
+                  $("#doctor_degination").append(designation);
+              }
+
+      })
+
+      $("#doctor_degination").change(function(){
+        debugger;
+          if($("#doctor_degination").val()==""){
+
+          }else{
+            /*
+            var filter_dept =  _.filter(appointmentdf,function(evt){ return evt.Specialist==$("#doctor_degination").val()})
+                  // filter_user = _.unique(_.pluck(districlist,"districtname"))
+                  console.log(filter_dept)
+
+                  let timeslot='<option value="" selected> Choose..</option>'
+                  for(let i=0;i<filter_dept.length;i++){
+
+                    timeslot+='<option value="'+filter_dept[i]['time']+'">'+filter_dept[i]['time__timeslot']+'</option>'
+
+                  }
+                  $("#appoint_time").empty()
+                  $("#appoint_time").append(timeslot);
+              }*/
+              if($("#today_date").val()==""){}
+              else if($("#userlist").val()==""){}
+              else if($("#doctor_degination").val()==""){}
+              else{
+                var doctorData={
+                  'date':$("#today_date").val(),
+                  'doctor':$("#userlist").val(),
+                  'designation':$("#doctor_degination").val(),
+                  'status':"DoctorConsult",
+                }
+                $.ajax({
+                    type:'POST',
+                    url:'',
+                    datatype:'json',
+                    data: JSON.stringify(doctorData),
+                    contentType: 'application/json',
+                    success: function(data) {
+                      //alert('succesfully register')
+                      debugger;
+                      if(data['timedata'].length){
+                        /*for(let i=0;i<data['timedata'].length;i++){
+
+                        }*/
+                          var timedata = _.unique(_.pluck(data['timedata'],'time'))
+                          var filter_dept =  _.filter(appointmentdf,function(evt){ return evt.Specialist==$("#doctor_degination").val()})
+                          let timeslot='<option value="" selected> Choose..</option>'
+                          for(let i=0;i<filter_dept.length;i++){
+                            if(_.contains(timedata,filter_dept[i]['time'])){
+                              timeslot+='<option value="'+filter_dept[i]['time']+'" disabled>'+filter_dept[i]['time__timeslot']+'</option>'
+                            }
+                            else{
+                              timeslot+='<option value="'+filter_dept[i]['time']+'">'+filter_dept[i]['time__timeslot']+'</option>'
+                              }
+                          }
+                          $("#appoint_time").empty()
+                          $("#appoint_time").append(timeslot);
+
+                      }
+                      else{
+                        var filter_dept =  _.filter(appointmentdf,function(evt){ return evt.Specialist==$("#doctor_degination").val()})
+                        let timeslot='<option value="" selected> Choose..</option>'
+                        for(let i=0;i<filter_dept.length;i++){
+
+                          timeslot+='<option value="'+filter_dept[i]['time']+'">'+filter_dept[i]['time__timeslot']+'</option>'
+
+                        }
+                        $("#appoint_time").empty()
+                        $("#appoint_time").append(timeslot);
+                      }
+                    },
+                    error: function(){
+                      alert('error')
+                    }
+                })
+              }
+
+        }
+      })
+
+
+
+      $("#send_appt").click(function(){
+        if($("#today_date").val()==""){}
+        else if($("#userlist").val()==""){}
+        //else if($("#doctor_degination").val()==""){}
+        else if($("#appoint_time").val()==""){}
+        else{
+            var saveData={
+              'doctor':$("#userlist").val(),
+              //'doctor_degination':$("#doctor_degination").val(),
+              'appoint_time':$("#appoint_time").val(),
+              'date':$("#today_date").val(),
+              'status':"Appointment_save",
+            }
+          $.ajax({
+              type:'POST',
+              url:'',
+              datatype:'json',
+              data: JSON.stringify(saveData),
+              contentType: 'application/json',
+              success: function(data) {
+                //alert('succesfully register')
+
+              },
+              error: function(){
+                alert('error')
+              }
+          })
+        }
+      })
+
+
+    })
+  </script>
+</head>
+<body background="https://www.keyholeclinic.in/wp-content/uploads/2019/10/keyhole-clinic-slider1.jpg">
+
+<div class="jumbotron text-center">
+  <h1>Book Doctor Appointment</h1>
+  <p></p>
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-2">
+      <input type="date" name="" class="form-control" value="" id="today_date">
+    </div>
+    <div class="col-sm-3">
+      <select class="form-control" name="" id="userlist">
+        <option value="" selected> Choose..</option>
+        {%for each in userlist%}
+        <option value="{{each.user}}">{{each.user__first_name}}</option>
+        {%endfor%}
+      </select>
+    </div>
+    <div class="col-sm-2">
+      <select class="form-control" name="" id="doctor_degination">
+        <option value="" selected> Choose..</option>
+        <option value=""></option>
+
+      </select>
+    </div>
+
+    <div class="col-sm-3">
+      <select class="form-control" name="" id="appoint_time">
+        <option value="" selected> Choose..</option>
+        <option value=""></option>
+
+      </select>
+    </div>
+
+    <div class="col-sm-2">
+      <button type="button" name="button" class="btn btn-primary" id="send_appt"> Appointment >></button>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

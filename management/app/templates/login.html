@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title></title>
+<style>
+
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body {
+  display: flex;
+  font-family: "Open Sans", sans-serif;
+}
+
+.image {
+  background: url(https://media.istockphoto.com/photos/modern-hospital-building-picture-id1312706504?k=20&m=1312706504&s=612x612&w=0&h=uWjrfV7m1WgrOi4Goq1LBc4pq5_OLG28PBTp6pC7Xf4=)
+    rgba(255, 255, 255, 0.3);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-blend-mode: lighten;
+  flex: 1;
+}
+
+.sign-in {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  flex: 1;
+}
+
+h1 {
+  font-size: 3.5rem;
+  margin-bottom: 30px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+input[type="email"],
+input[type="password"] {
+  padding: 10px;
+  font-size: 1.2rem;
+  border: none;
+  border-bottom: solid 1px #000;
+  outline: none;
+}
+
+input[type="email"]::placeholder,
+input[type="password"]::placeholder {
+  letter-spacing: 2px;
+  transition: all 0.3s ease;
+}
+
+input[type="email"]:hover::placeholder,
+input[type="password"]:hover::placeholder {
+  color: #000;
+}
+
+input[type="submit"] {
+  background-color: #000;
+  color: #fff;
+  padding: 10px;
+  font-size: 1.3rem;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s ease;
+  border-radius: 15px;
+}
+
+input[type="submit"]:hover {
+  background-color: #eee;
+  color: #000;
+}
+
+a {
+  color: #424242;
+  text-decoration: none;
+  align-self: flex-end;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+::selection {
+  color: #fff;
+  background-color: #000;
+}
+
+@media screen and (max-width: 786px) {
+  .image {
+    display: none;
+  }
+}
+
+</style>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+<!-- Custom Theme files -->
+<link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
+<!-- //Custom Theme files -->
+<!-- web font -->
+<link href="//fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i" rel="stylesheet">
+<!-- //web font -->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+
+    $('#login').click(function(){
+      debugger
+      var email  = $('#username').val()
+      var psw = $('#password').val()
+
+    if (email == ''){
+      alert('Please enter email')
+    }
+    else if(psw==''){alert('Please enter password')}
+    else{
+      info = {'username':email,'password':psw}
+      $.ajax({
+          type:'POST',
+          url:'',
+          datatype:'json',
+          data: JSON.stringify(info),
+          contentType: 'application/json',
+          success: function(data) {
+            debugger
+            alert(data)
+            alert('login succesfully ')
+            window.location.href=data['url']
+          },
+          error: function(){
+            alert('error')
+          }
+      })
+    }
+    })
+
+
+  });
+</script>
+
+</head>
+<body>
+
+<div class="image"></div>
+<div class="sign-in">
+  <h1>Sign In</h1>
+  <form>
+    <input type="email" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <a href="#">Forgot password?</a>
+    <input type="button" id="login" value="Sign In" style="padding:2%;">
+  </form>
+</div>
+</body>
+</html>
